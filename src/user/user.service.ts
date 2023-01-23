@@ -1,46 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { User } from './entities/user.entity';
+
+// This should be a real class/interface representing a user entity
+export type User = any;
 
 @Injectable()
-export class UserService {
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+export class UsersService {
+  private readonly users = [
+    {
+      userId: 1,
+      username: 'user1',
+      password: 'user',
+    },
+    {
+      userId: 2,
+      username: 'user2',
+      password: 'user',
+    },
+  ];
 
-  create(createUserDto: CreateUserDto): Promise<User> {
-    let user: User = new User();
-    user.firstName = createUserDto.firstName;
-    user.lastName = createUserDto.lastName;
-    user.age = createUserDto.age;
-    return this.userRepository.save(user);
-  }
-
-  findAll(): Promise<User[]> {
-    return this.userRepository.find();
-  }
-
-  findOne(id: number) {
-    return this.userRepository.findOne({
-      where:{
-        id:id
-      }
-    })
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    let user: User = new User();
-    user.firstName = updateUserDto.firstName;
-    user.lastName = updateUserDto.lastName;
-    user.age = updateUserDto.age;
-    user.id = id;
-    return this.userRepository.save(user);
-  }
-
-  remove(id: number) {
-    return this.userRepository.delete(id);
+  async findOne(username: string): Promise<User | undefined> {
+    return this.users.find(user => user.username === username);
   }
 }
